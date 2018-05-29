@@ -8,13 +8,33 @@
         <link rel="stylesheet" href="./src/main.css"/>
     </head>
     <body>
-        <canvas id="canvas" width="580" height="392"></canvas>
-
+        
+        <canvas id="canvas" width="770px" height="566px"></canvas>
+    
         <script
             src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous">
         </script>
         <script src="./src/main.js"></script>
+
+        <script>
+            $("#canvas").dots([
+                { x: 536, y: 161, text: 'Quadro' },
+                { x: 693, y: 349, text: 'Almofada' },
+                { x: 148, y: 384, text: 'Banquinho' }
+            ], {
+                img: './src/ambiente.jpg',
+                setmode: true,
+                setcallback: function (dot) {
+                    var item = prompt('Nome do Item');
+                    // console.log(dot.x, dot.y);
+                    dot.text = item;
+                    
+                }
+            });
+
+
+        </script>
     </body>
 </html>
