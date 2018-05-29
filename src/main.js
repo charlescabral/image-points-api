@@ -1,6 +1,6 @@
 $(function() {
 
-    var canvas = document.getElementById('Canvas');
+    var canvas = document.getElementById('canvas');
     var context = canvas.getContext("2d");
     
     // Map sprite
@@ -24,20 +24,25 @@ $(function() {
         var mouseXPos = (mouse.x - rect.left);
         var mouseYPos = (mouse.y - rect.top);
     
-        
+        console.log("Marker added");
+    
         // Move the marker when placed to a better location
         var marker = new Marker();
         marker.XPos = mouseXPos - (marker.Width / 2);
         marker.YPos = mouseYPos - marker.Height;
-        
-        console.log(marker);
-
+    
         Markers.push(marker);
     }
     
     // Add mouse click event listener to canvas
     canvas.addEventListener("mousedown", mouseClicked, false);
     
+    var firstLoad = function () {
+        context.font = "15px Georgia";
+        context.textAlign = "center";
+    }
+    
+    firstLoad();
     
     var main = function () {
         draw();
