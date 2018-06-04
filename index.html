@@ -1,36 +1,70 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Image Points Marker</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./src/main.css"/>
-    </head>
-    <body>
 
-        <canvas id="canvas" width="770px" height="566px"></canvas>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Image Points Marker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./dist/main.css"/>
+</head>
 
-        <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous">
-        </script>
-        <script src="./dist/main.js"></script>
+<body>
+    <textarea id="currentMapJson" cols="1" rows="7" hidden>
+    [
+    {"x":40.64935064935065, "y":28.62190812720848, "text":"Quadro", "magePos":1, "sku":111 },
+    {"x":91.2987012987013, "y":61.130742049469966, "text":"Almofada", "magePos":2, "sku":222 }
+    ]
+    </textarea>
+    <div class="Map_container">
 
-        <script>
-            $("#canvas").dots([
-                { x: 536, y: 161, text: 'Quadro' },
-                { x: 693, y: 349, text: 'Almofada' },
-                { x: 148, y: 384, text: 'Banquinho' }
-            ], {
-                img: './src/ambiente.jpg',
-                setmode: true,
-                setcallback: function (dot) {
-                    var item = prompt('Nome do Item');
-                    dot.text = item;
-                }
-            });
-        </script>
-    </body>
+        <aside class="Map_associated-products">
+            <ul class="Map_products">
+                <li class="Map_product" data-magepos="1" data-sku="111">
+                    <span class="Map_item">
+                        <span class="Map_pos">1</span>
+                        Quadro
+                    </span>
+                </li>
+                <li class="Map_product" data-magepos="2" data-sku="222">
+                    <span class="Map_item">
+                        <span class="Map_pos">2</span>
+                        Almofada
+                    </span>
+                </li>
+                <li class="Map_product" data-magepos="3" data-sku="333">
+                    <span class="Map_item">
+                        <span class="Map_pos">3</span>
+                        Banquinho
+                    </span>
+                </li>
+            </ul>
+        </aside>
+
+        <section class="Map_content">
+
+            <canvas id="Map_image" width="770px" height="566px"></canvas>
+
+            <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+            <script src="./dist/app.js"></script>
+            <script>
+                $("#Map_image").dots([
+                    { x: 40.64935064935065, y: 28.62190812720848, text: 'Quadro', magePos: 1, sku: 111 },
+                    { x: 91.2987012987013, y: 61.130742049469966, text: 'Almofada', magePos: 2, sku: 222 },
+                    { x: 18.83116883116883, y: 67.84452296819788, text: 'Banquinho', magePos: 3, sku: 333 }
+                ], {
+                    img: './src/img/ambiente.jpg',
+                    setmode: true,
+                    setcallback: function (dot) {
+                        console.log('front', dot);
+                        var item = prompt('Nome do Item');
+                        dot.text = item;
+                    }
+                });
+            </script>
+        </section>
+
+    </div>
+
+</body>
 </html>

@@ -1,11 +1,19 @@
-const gulp = require('gulp');
-const eslint = require('gulp-eslint');
-const minify = require('gulp-minify');
+const gulp    = require('gulp'),
+      eslint  = require('gulp-eslint'),
+      babel   = require('gulp-babel'),
+      minify  = require('gulp-minify'),
+      sass    = require('gulp-sass'),
+      bourbon = require('node-bourbon').includePaths,
+      neat    = require('node-neat').includePaths;
 
-gulp.task('lint', function() {
-    return gulp.src('src/*.js').pipe(eslint({
+gulp.task('scripts', () =>
+    gulp.src('./src/js/app.js')
+    .pipe(babel({
+        presets: ['env']
+    }))
+    .pipe(eslint({
         'rules':{
-            'quotes': [1, 'single'],
+            'quotes': [0, 'single'],
             'semi': [1, 'always']
         }
     }))
@@ -17,12 +25,23 @@ gulp.task('lint', function() {
         }
     }))
     .pipe(gulp.dest('dist'))
-    .pipe(eslint.failOnError());
-});
+    .pipe(eslint.failOnError())
+);
+
+
+gulp.task('styles', function () {
+    return gulp.src('./src/scss/**/*.scss')
+    .pipe(sass({
+        includePaths: [neat, bourbon],
+        outputStyle: 'compressed'
+    }).on('error', sass.logError))
+    .pipe(gulp.dest('./dist'));
+})
 
 
 gulp.task('watch', function () {
     gulp.watch([
-        'src/*.js'
-    ], ['lint']);
+        './src/scss/*.scss',
+        './src/js/*.js'
+    ], ['scripts','styles']);
 });
