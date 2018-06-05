@@ -66,28 +66,62 @@
       }
     }, options);
 
-    // initialize dots
+    // input items
     var str = document.getElementById("currentMapJson").value;
     var currentMapJson = JSON.parse(str);
+
+    // html items
+    var mapItems = $('.Map_product');
+    var htmlMapJson = [];
+    $.each(mapItems, function (i, el) {
+      var text = $(el).find('.Map_title').text();
+      var magePos = $(el).data('magepos');
+      var sku = $(el).data('sku');
+      htmlMapJson.push({ "text": text, "magePos": magePos, "sku": sku, "existing": false });
+    });
+
+    // check existing items
+    htmlMapJson.filter(function (newItem, i) {
+      for (var u = 0; u < currentMapJson.length; u++) {
+        if (currentMapJson[u].sku == newItem.sku) {
+          htmlMapJson[i].existing = true;
+          break;
+        }
+      }
+    });
+
+    console.log(htmlMapJson);
+
+    // 
+    // htmlMapJson.filter( function(newItem, i) {
+    //   console.log(newItem.sku);
+
+    //   for (let u = 0; u < currentMapJson.length; u++) {
+
+    //     if (! currentMapJson[u].sku === newItem.sku) {
+    //       newItem[prop] = "teste";
+    //       console.log('ja existente', newItem.sku)
+    //       break;
+    //     }
+
+    // let a = document.createElement("a");
+    //     // a.textContent = 'htmlMapJson[i].text';
+    //     // a.className = 'Map_modal-link';
+    //     // // a.setAttribute('data-magePos',htmlMapJson[i].magePos);
+    //     // // a.href = "#SKU_"+htmlMapJson[i].sku;
+    //     // $('#Map_options').append(a);
+    //   }
+
+    //   // return currentMapJson.indexOf( el.magePos ) === index;
+    // });
+
+    // initialize dots
     settings.dots = [];
 
     $.each(currentMapJson, function (i, el) {
       settings.dots.push(new dot(el.x, el.y, el.text, el.magePos, settings.align));
-      $('#Map_' + el.sku).addClass('existing');
-      // console.log('initialize dots', el.sku);
+      $('#Map_' + el.sku).addClass('existing').removeClass('setPosition');
     });
-
-    console.log('input', currentMapJson);
-    console.log('default array', dots);
-
-    dots.filter(function (elem, index, array) {
-      return currentMapJson.indexOf(elem) === index;
-      // console.log(dots)
-    });
-
-    // dots.reduce( function( prevVal, elem, index, array ) {
-
-    // }, initialValue );
 
     // create tooltip canvas
     var tooltip = $("<div/>").appendTo("body").addClass("hoverDotTooltip").css({
@@ -142,10 +176,11 @@
     };
 
     // places a new dot
+
     var placedot = function placedot(event, element) {
       var ndot = new dot(event.clientX - element.offsetLeft, event.clientY - element.offsetTop + $(window).scrollTop(), settings.defaulttext, 8, settings.align, element);
-      console.log('new click', settings.dots);
-
+      // console.log('new click', settings.dots)
+      // $('.Map_modal').fadeIn(500, function() {});
       settings.dots.push(ndot);
       render();
       settings.setcallback(ndot);

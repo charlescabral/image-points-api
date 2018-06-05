@@ -16,34 +16,68 @@
     {"x":91.2987012987013, "y":61.130742049469966, "text":"Almofada", "magePos":2, "sku":222 }
     ]
     </textarea>
+
+    
+
     <div class="Map_container">
 
         <aside class="Map_associated-products">
             <ul class="Map_products">
-                <li class="Map_product" data-magepos="1" data-sku="111">
+                <li class="Map_product" id="Map_111" data-magepos="1" data-sku="111">
                     <span class="Map_item">
-                        <span class="Map_pos">1</span>
-                        Quadro
+                        <span class="Map_img">
+                            <span class="Map_pos">1</span>
+                            <img src="./src/img/movel.jpg"/>
+                        </span>
+                        <span class="Map_title">Quadro lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
                     </span>
                 </li>
-                <li class="Map_product" data-magepos="2" data-sku="222">
+                <li class="Map_product" id="Map_222" data-magepos="2" data-sku="222">
                     <span class="Map_item">
-                        <span class="Map_pos">2</span>
-                        Almofada
+                        <span class="Map_img">
+                            <span class="Map_pos">2</span>
+                            <img src="./src/img/movel.jpg"/>
+                        </span>
+                        <span class="Map_title">Almofada lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
                     </span>
                 </li>
-                <li class="Map_product" data-magepos="3" data-sku="333">
+                <li class="Map_product" id="Map_333" data-magepos="3" data-sku="333">
                     <span class="Map_item">
-                        <span class="Map_pos">3</span>
-                        Banquinho
+                        <span class="Map_img">
+                            <span class="Map_pos">3</span>
+                            <img src="./src/img/movel.jpg"/>
+                        </span>
+                        <span class="Map_title">Banquinho lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+                    </span>
+                </li>
+
+                <li class="Map_product" id="Map_444" data-magepos="4" data-sku="444">
+                    <span class="Map_item">
+                        <span class="Map_img">
+                            <span class="Map_pos">4</span>
+                            <img src="./src/img/movel.jpg"/>
+                        </span>
+                        <span class="Map_title">Mesa lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
                     </span>
                 </li>
             </ul>
         </aside>
 
+        <canvas id="Map_image" width="770px" height="566px"></canvas>
+        
         <section class="Map_content">
 
-            <canvas id="Map_image" width="770px" height="566px"></canvas>
+
+            <!-- <section class="Map_modal">
+                <div class="Map_modal-wrapper">
+                    <div class="Map_modal-cell">
+                        <div class="Map_modal-box">
+                            <div class="Map_modal-head">Escolha o item para mapear</div>
+                            <div class="Map_modal-content" id="Map_options"></div>
+                        </div>
+                    </div>
+                </div>
+            </section> -->
 
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
             <script src="./dist/app.js"></script>
@@ -56,9 +90,9 @@
                     img: './src/img/ambiente.jpg',
                     setmode: true,
                     setcallback: function (dot) {
-                        console.log('front', dot);
-                        var item = prompt('Nome do Item');
-                        dot.text = item;
+                        // console.log('front', dot);
+                        // var item = prompt('Nome do Item');
+                        dot.text = 'item';
                     }
                 });
             </script>
