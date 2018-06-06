@@ -90,34 +90,8 @@
       }
     });
 
-    console.log(htmlMapJson);
-
-    // 
-    // htmlMapJson.filter( function(newItem, i) {
-    //   console.log(newItem.sku);
-
-    //   for (let u = 0; u < currentMapJson.length; u++) {
-
-    //     if (! currentMapJson[u].sku === newItem.sku) {
-    //       newItem[prop] = "teste";
-    //       console.log('ja existente', newItem.sku)
-    //       break;
-    //     }
-
-    // let a = document.createElement("a");
-    //     // a.textContent = 'htmlMapJson[i].text';
-    //     // a.className = 'Map_modal-link';
-    //     // // a.setAttribute('data-magePos',htmlMapJson[i].magePos);
-    //     // // a.href = "#SKU_"+htmlMapJson[i].sku;
-    //     // $('#Map_options').append(a);
-    //   }
-
-    //   // return currentMapJson.indexOf( el.magePos ) === index;
-    // });
-
     // initialize dots
     settings.dots = [];
-
     $.each(currentMapJson, function (i, el) {
       settings.dots.push(new dot(el.x, el.y, el.text, el.magePos, settings.align));
       $('#Map_' + el.sku).addClass('existing').removeClass('setPosition');
@@ -178,12 +152,31 @@
     // places a new dot
 
     var placedot = function placedot(event, element) {
-      var ndot = new dot(event.clientX - element.offsetLeft, event.clientY - element.offsetTop + $(window).scrollTop(), settings.defaulttext, 8, settings.align, element);
-      // console.log('new click', settings.dots)
-      // $('.Map_modal').fadeIn(500, function() {});
-      settings.dots.push(ndot);
-      render();
-      settings.setcallback(ndot);
+
+      $.each(htmlMapJson, function (i, newItem) {
+        if (!newItem.existing) {
+          var a = document.createElement("a");
+          a.textContent = newItem.text;
+          a.className = 'Map_modal-link';
+          a.setAttribute('data-magePos', newItem.magePos);
+          a.href = "#SKU_" + newItem.sku;
+          document.getElementById("Map_options").appendChild(a);
+        }
+      });
+
+      $('.Map_modal').fadeIn(500, function () {
+
+        $(document).bind('click', '.Map_modal-link', function (ev) {
+          var ndot = new dot(event.clientX - element.offsetLeft, event.clientY - element.offsetTop + $(window).scrollTop(), $(ev)[0].target.innerText, $(ev)[0].target.dataset.magepos, settings.align, element);
+          // console.log(settings.dots);
+          $('.Map_modal').fadeOut(300, function (params) {
+            settings.dots.push(ndot);
+            render();
+            settings.setcallback(ndot);
+            $('#Map_options').html('');
+          });
+        });
+      });
     };
 
     // removes a dot
