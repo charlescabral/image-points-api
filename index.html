@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <textarea id="currentMapJson" cols="1" rows="7" hidden>
+    <textarea id="map_decorated_ambient" cols="1" rows="7">
     [
     {"x":40.64935064935065, "y":28.62190812720848, "text":"Quadro", "magePos":1, "sku":111 },
     {"x":91.2987012987013, "y":61.130742049469966, "text":"Almofada", "magePos":2, "sku":222 }
@@ -63,10 +63,24 @@
             </ul>
         </aside>
         
-
-        
         <div class="Map_content">
+            
             <canvas id="Map_image" width="770px" height="566px"></canvas>
+
+            <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+            <script src="./dist/app.js"></script>
+            <script>
+                jQuery("#Map_image").dots([], {
+                    img: './src/img/ambiente.jpg',
+                    setmode: true,
+                    setcallback: function (dot) {
+                        // console.log('front', dot);
+                        // var item = prompt('Nome do Item');
+                        dot.text = 'item';
+                    }
+                });
+            </script>
+    
             <section class="Map_modal">
                 <div class="Map_modal-wrapper">
                     <div class="Map_modal-cell">
@@ -77,25 +91,8 @@
                     </div>
                 </div>
             </section>
-
-            <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-            <script src="./dist/app.js"></script>
-            <script>
-                $("#Map_image").dots([
-                    { x: 40.64935064935065, y: 28.62190812720848, text: 'Quadro', magePos: 1, sku: 111 },
-                    { x: 91.2987012987013, y: 61.130742049469966, text: 'Almofada', magePos: 2, sku: 222 },
-                    { x: 18.83116883116883, y: 67.84452296819788, text: 'Banquinho', magePos: 3, sku: 333 }
-                ], {
-                    img: './src/img/ambiente.jpg',
-                    setmode: true,
-                    setcallback: function (dot) {
-                        // console.log('front', dot);
-                        // var item = prompt('Nome do Item');
-                        dot.text = 'item';
-                    }
-                });
-            </script>
         </div>
+
 
     </div>
 
