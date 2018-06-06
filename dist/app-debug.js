@@ -1,18 +1,18 @@
 "use strict";
 
-(function (jQuery) {
+(function ($) {
 
   // input items
   var inputMapJson = document.getElementById("map_decorated_ambient");
-  var currentMapJson = JSON.parse(inputMapJson.value);
+  var currentMapJson = $.trim(inputMapJson.value) != '' ? JSON.parse(inputMapJson.value) : [];
 
   // html items
-  var mapItems = jQuery('.Map_product');
+  var mapItems = $('.Map_product');
   var htmlMapJson = [];
-  jQuery.each(mapItems, function (i, el) {
-    var text = jQuery(el).find('.Map_title').text();
-    var magePos = jQuery(el).data('magepos');
-    var sku = jQuery(el).data('sku');
+  $.each(mapItems, function (i, el) {
+    var text = $(el).find('.Map_title').text();
+    var magePos = $(el).data('magepos');
+    var sku = $(el).data('sku');
     htmlMapJson.push({ "text": text, "magePos": magePos, "sku": sku, "maped": false });
   });
 
@@ -35,7 +35,7 @@
   };
   var getOptionsList = function getOptionsList() {
 
-    jQuery.each(htmlMapJson, function (i, newItem) {
+    $.each(htmlMapJson, function (i, newItem) {
       if (!newItem.maped) {
         var radio = document.createElement("input");
         radio.setAttribute('type', 'radio');
@@ -67,16 +67,16 @@
     this.radius = 50; // hover event radius
 
     if (el != undefined) {
-      this.x = this.x * this.align.x / jQuery(el).width();
-      this.y = this.y * this.align.y / jQuery(el).height();
+      this.x = this.x * this.align.x / $(el).width();
+      this.y = this.y * this.align.y / $(el).height();
     }
 
     this.relativeX = function (el) {
-      return this.x * jQuery(el).width() / this.align.x;
+      return this.x * $(el).width() / this.align.x;
     };
 
     this.relativeY = function (el) {
-      return this.y * jQuery(el).height() / this.align.y;
+      return this.y * $(el).height() / this.align.y;
     };
 
     this.render = function (context, el) {
@@ -96,15 +96,15 @@
     this.isMe = function (x, y, el, maxDeviration) {
       maxDeviration = maxDeviration || 0.01;
       if (el != undefined) {
-        x = x * this.align.x / jQuery(el).width();
-        y = y * this.align.y / jQuery(el).height();
+        x = x * this.align.x / $(el).width();
+        y = y * this.align.y / $(el).height();
       }
       return isNearby(x, this.x, maxDeviration) && isNearby(y, this.y, maxDeviration);
     };
   };
 
-  jQuery.fn.dots = function (dots, options) {
-    var settings = jQuery.extend({
+  $.fn.dots = function (dots, options) {
+    var settings = $.extend({
       img: "",
       setmode: false,
       setcallback: function setcallback(dot) {},
@@ -118,9 +118,10 @@
 
     // initialize dots
     settings.dots = [];
-    jQuery.each(currentMapJson, function (i, el) {
+
+    $.each(currentMapJson, function (i, el) {
       settings.dots.push(new dot(el.x, el.y, el.text, el.magePos, settings.align));
-      jQuery('#Map_' + el.sku).addClass('maped');
+      $('#Map_' + el.sku).addClass('maped');
     });
 
     // create tooltip canvas
@@ -128,8 +129,8 @@
 
     // re-renders all dots
     var render = function render() {
-      jQuery.each(contexts, function (i, data) {
-        jQuery.each(settings.dots, function (j, dot) {
+      $.each(contexts, function (i, data) {
+        $.each(settings.dots, function (j, dot) {
           dot.render(data.ctx, data.el);
         });
       });
@@ -138,17 +139,17 @@
     // places a new dot
     var setProductDot = function setProductDot(event, element) {
 
-      jQuery('.Map_modal-option').change(function () {
-        var currentOption = jQuery(this);
+      $('.Map_modal-option').change(function () {
+        var currentOption = $(this);
         var magePos = currentOption.val();
         var sku = currentOption.data('sku');
         var text = currentOption.data('text');
 
-        jQuery('#Map_' + sku).addClass('maped');
+        $('#Map_' + sku).addClass('maped');
 
-        var elementParent = jQuery(element).parent().offset();
+        var elementParent = $(element).parent().offset();
 
-        var ndot = new dot(event.clientX - elementParent.left, event.clientY - elementParent.top + jQuery(window).scrollTop(), text, magePos, settings.align, element);
+        var ndot = new dot(event.clientX - elementParent.left, event.clientY - elementParent.top + $(window).scrollTop(), text, magePos, settings.align, element);
 
         ndot.text = text;
         console.log(ndot.text);
@@ -157,9 +158,9 @@
         render();
         settings.setcallback(ndot);
 
-        jQuery('.Map_modal').fadeOut(300, function () {
+        $('.Map_modal').fadeOut(300, function () {
 
-          jQuery('#Map_options').html('');
+          $('#Map_options').html('');
 
           currentMapJson.push({
             "x": ndot.x,
@@ -187,7 +188,7 @@
       el.style = "background: url(" + settings.img + ");" + "background-repeat: no-repeat; " + "background-size: 100% 100%;" + "width: " + settings.width + "; ";
       "height: " + settings.height + "; ";
 
-      var jqel = jQuery(el);
+      var jqel = $(el);
 
       contexts.push({ el: el, ctx: el.getContext("2d") });
 
@@ -198,7 +199,7 @@
       if (settings.setmode) jqel.click(function (e) {
         if (missingMap()) {
           getOptionsList();
-          jQuery('.Map_modal').fadeIn(500, function () {
+          $('.Map_modal').fadeIn(500, function () {
             setProductDot(e, el);
           });
         }
@@ -216,8 +217,8 @@
     return this;
   };
 
-  // jQuery.fn.initDots = function(options) {
-  //   let settings = jQuery.extend(
+  // $.fn.initDots = function(options) {
+  //   let settings = $.extend(
   //     {
   //       teste: "",
   //       setcallback: function() {},

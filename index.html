@@ -11,11 +11,11 @@
 
 <body>
     <textarea id="map_decorated_ambient" cols="1" rows="7">
-    [
+    </textarea>
+    <!-- [
     {"x":40.64935064935065, "y":28.62190812720848, "text":"Quadro", "magePos":1, "sku":111 },
     {"x":91.2987012987013, "y":61.130742049469966, "text":"Almofada", "magePos":2, "sku":222 }
-    ]
-    </textarea>
+    ] -->
 
     
 
@@ -70,7 +70,11 @@
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
             <script src="./dist/app.js"></script>
             <script>
-                jQuery("#Map_image").dots([], {
+                jQuery("#Map_image").dots([
+                    { x: 536, y: 161, text: 'Quadro' },
+                    { x: 693, y: 349, text: 'Almofada' },
+                    { x: 148, y: 384, text: 'Banquinho' }
+                ], {
                     img: './src/img/ambiente.jpg',
                     setmode: true,
                     setcallback: function (dot) {
