@@ -11,6 +11,12 @@
 
 <body>
     <textarea id="map_decorated_ambient" cols="1" rows="7">
+        [
+        {"x":38.92857142857143,"y":25.618374558303888,"text":"Quadro lorem ipsum dolor sit amet, consectetur adipiscing elit","magePos":"1","sku":9821,"maped":true},
+        {"x":90.35714285714286,"y":61.48409893992933,"text":"Banquinho lorem ipsum dolor sit amet, consectetur adipiscing elit","magePos":"3","sku":333,"maped":true},
+        {"x":16.98051948051948,"y":47.879858657243815,"text":"Almofada lorem ipsum dolor sit amet, consectetur adipiscing elit","magePos":"2","sku":222,"maped":true},
+        {"x":77.75974025974025,"y":22.614840989399294,"text":"Mesa lorem ipsum dolor sit amet, consectetur adipiscing elit","magePos":"5","sku":555,"maped":true}
+        ]
     </textarea>
     <!-- [
     {"x":40.64935064935065, "y":28.62190812720848, "text":"Quadro", "magePos":1, "sku":111 },
@@ -30,15 +36,17 @@
                             <img src="./src/img/movel.jpg"/>
                         </span>
                         <span class="Map_title">Quadro lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+                        <a href="#" class="Map_delete">x</a>
                     </span>
                 </li>
-                <li class="Map_product" id="Map_222" data-magepos="2" data-sku="222">
+                <li class="Map_product" id="Map_222" data-magepos="20" data-sku="222">
                     <span class="Map_item">
                         <span class="Map_img">
-                            <span class="Map_pos">2</span>
+                            <span class="Map_pos">20</span>
                             <img src="./src/img/movel.jpg"/>
                         </span>
                         <span class="Map_title">Almofada lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+                        <a href="#" class="Map_delete">x</a>
                     </span>
                 </li>
                 <li class="Map_product" id="Map_333" data-magepos="3" data-sku="333">
@@ -48,19 +56,23 @@
                             <img src="./src/img/movel.jpg"/>
                         </span>
                         <span class="Map_title">Banquinho lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+                        <a href="#" class="Map_delete">x</a>
                     </span>
                 </li>
 
-                <li class="Map_product" id="Map_444" data-magepos="4" data-sku="444">
+                <li class="Map_product" id="Map_14213123" data-magepos="4" data-sku="14213123">
                     <span class="Map_item">
                         <span class="Map_img">
                             <span class="Map_pos">4</span>
                             <img src="./src/img/movel.jpg"/>
                         </span>
                         <span class="Map_title">Mesa lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+                        <a href="#" class="Map_delete">x</a>
                     </span>
                 </li>
             </ul>
+
+            <button class="clear_porratoda">Apaga a porra toda</button>
         </aside>
         
         <div class="Map_content">
@@ -70,18 +82,9 @@
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
             <script src="./dist/app.js"></script>
             <script>
-                jQuery("#Map_image").dots([
-                    { x: 536, y: 161, text: 'Quadro' },
-                    { x: 693, y: 349, text: 'Almofada' },
-                    { x: 148, y: 384, text: 'Banquinho' }
-                ], {
+                jQuery("#Map_image").dots([], {
                     img: './src/img/ambiente.jpg',
                     setmode: true,
-                    setcallback: function (dot) {
-                        // console.log('front', dot);
-                        // var item = prompt('Nome do Item');
-                        dot.text = 'item';
-                    }
                 });
             </script>
     

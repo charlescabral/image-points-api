@@ -2,6 +2,8 @@
 
 (function($) {
 
+  const contexts = [];
+
   // input items
   const inputMapJson = document.getElementById("map_decorated_ambient");
   const currentMapJson = ($.trim(inputMapJson.value) != '') ? JSON.parse(inputMapJson.value) : [];
@@ -15,11 +17,33 @@
     let sku = $(el).data('sku');
     htmlMapJson.push({"text":text, "magePos": magePos, "sku": sku, "maped": false});
   });
+
+  // merge new and maped items
+  const oldItemsMaped = [];
+
+  if (currentMapJson.length > htmlMapJson.length) {
+    currentMapJson.filter( function( elem ) {
+      for (let i = 0; i < this.length; i++) {
+        if(this[i].sku == elem.sku) {
+          oldItemsMaped.push(elem)
+          break;
+        }
+      }
+    }, htmlMapJson );
+  } else {
+    htmlMapJson.filter( function( elem, index, array ) {
+      for (let i = 0; i < this.length; i++) {
+        if(this[i].sku == elem.sku) {
+          oldItemsMaped.push(this[i])
+          break;
+        }
+      }
+    }, currentMapJson );
+  }
   
   // check if maped items in input
-
-  const missingMap = function() {
-    let missingMap = 0;
+  const missingMap = (() => {
+    let count = 0;
     htmlMapJson.filter( function(newItem, i) {
       for (let u = 0; u < currentMapJson.length; u++) {
         if(currentMapJson[u].sku == newItem.sku) {
@@ -27,14 +51,16 @@
           break;
         }
       }
-      if(!newItem.maped){
-        missingMap++;
-      }
+    
+      !newItem.maped ? count++ : 0
+
     });
-    return missingMap ? true : false;
-  }
+    return count;
+  })
+
+
   const getOptionsList = function() {
-   
+    $('#Map_options').html('');
     $.each(htmlMapJson, function(i, newItem) {  
       if(!newItem.maped){
         let radio = document.createElement("input");
@@ -48,13 +74,10 @@
         label.appendChild(radio);
         label.appendChild(document.createTextNode(newItem.text));
         document.getElementById("Map_options").appendChild(label);
-        
       }
     });  
   };
 
-  
-  
   // returns whether values are less than (maxDev * 100)% away
   const isNearby = function(one, two, maxDev) {
     return Math.abs(1 - Math.abs(one / two)) < maxDev;
@@ -62,7 +85,7 @@
   
   // dot helper class
   // x,y are assumend to already be relative to align unless el is not undefined
-  var dot = function(_x, _y, _text, _magePos, _align, el) {
+  const dot = function(_x, _y, _text, _magePos, _align, el) {
     this.x = _x;
     this.y = _y;
     this.text = _text; // dot text
@@ -116,7 +139,7 @@
   };
   
   $.fn.dots = function(dots, options) {
-    var settings = $.extend(
+    const settings = $.extend(
       {
         img: "",
         setmode: false,
@@ -133,21 +156,18 @@
     
     // initialize dots
     settings.dots = [];
-
-    $.each(currentMapJson, function(i, el) {
+    
+    $.each(oldItemsMaped, function(i, el) {
       settings.dots.push(new dot(el.x, el.y, el.text, el.magePos, settings.align));
       $('#Map_'+ el.sku).addClass('maped');
     });
-    
-    // create tooltip canvas
-    var contexts = [];
+
+    inputMapJson.value = JSON.stringify(oldItemsMaped)
     
     // re-renders all dots
-    var render = function() {
+    const render = function() {
       $.each(contexts, function(i, data) {
-
         $.each(settings.dots, function(j, dot) {
-          // console.log(dot.text)
           dot.render(data.ctx, data.el);
         });
       });
@@ -176,7 +196,6 @@
         );
 
         ndot.text = text
-        // console.log(ndot.text)
 
         settings.dots.push(ndot);
         render();
@@ -184,18 +203,18 @@
 
         $('.Map_modal').fadeOut(300, function() {
 
-          $('#Map_options').html('');
-
-          currentMapJson.push({
-            "x":ndot.x, 
-            "y": ndot.y, 
-            "text": text, 
-            "magePos": magePos, 
-            "sku": sku,
-            "maped": true
+          $.each([oldItemsMaped, currentMapJson], function(i, array) {           
+            array.push({
+              "x":ndot.x, 
+              "y": ndot.y, 
+              "text": text, 
+              "magePos": magePos, 
+              "sku": sku,
+              "maped": true
+            });
           });
 
-          inputMapJson.value = JSON.stringify(currentMapJson)
+          inputMapJson.value = JSON.stringify(oldItemsMaped)
         })
       });
     };
@@ -220,8 +239,9 @@
         "; ";
         "height: " + settings.height + "; ";
       
-      var jqel = $(el);
-      
+      const jqel = $(el);
+
+      // create tooltip canvas
       contexts.push({ el: el, ctx: el.getContext("2d") });
       
       jqel.mousemove(function(event) {
@@ -230,6 +250,8 @@
       
       if (settings.setmode)
       jqel.click(function(e) {
+        console.log(jqel)
+        // jqel.clearRect(0, 0, contexts.width, contexts.height); //clear canvas
         if (missingMap()) {
           getOptionsList();
           $('.Map_modal').fadeIn(500, function() {
@@ -244,6 +266,18 @@
         render();
       });
     });
+
+    $('.clear_porratoda').click(function() {
+      console.log('apaga a porra toda', settings.dots)
+      
+
+
+      // $.each(contexts, function(i, data) {
+      //   $.each(settings.dots, function(j, dot) {
+      //     dot.render(data.ctx, data.el);
+      //   });
+      // });
+    })
     
     // render initial dots
     render();

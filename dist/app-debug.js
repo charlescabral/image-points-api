@@ -2,6 +2,8 @@
 
 (function ($) {
 
+  var contexts = [];
+
   // input items
   var inputMapJson = document.getElementById("map_decorated_ambient");
   var currentMapJson = $.trim(inputMapJson.value) != '' ? JSON.parse(inputMapJson.value) : [];
@@ -16,10 +18,32 @@
     htmlMapJson.push({ "text": text, "magePos": magePos, "sku": sku, "maped": false });
   });
 
-  // check if maped items in input
+  // merge new and maped items
+  var oldItemsMaped = [];
 
+  if (currentMapJson.length > htmlMapJson.length) {
+    currentMapJson.filter(function (elem) {
+      for (var i = 0; i < this.length; i++) {
+        if (this[i].sku == elem.sku) {
+          oldItemsMaped.push(elem);
+          break;
+        }
+      }
+    }, htmlMapJson);
+  } else {
+    htmlMapJson.filter(function (elem, index, array) {
+      for (var i = 0; i < this.length; i++) {
+        if (this[i].sku == elem.sku) {
+          oldItemsMaped.push(this[i]);
+          break;
+        }
+      }
+    }, currentMapJson);
+  }
+
+  // check if maped items in input
   var missingMap = function missingMap() {
-    var missingMap = 0;
+    var count = 0;
     htmlMapJson.filter(function (newItem, i) {
       for (var u = 0; u < currentMapJson.length; u++) {
         if (currentMapJson[u].sku == newItem.sku) {
@@ -27,14 +51,14 @@
           break;
         }
       }
-      if (!newItem.maped) {
-        missingMap++;
-      }
-    });
-    return missingMap ? true : false;
-  };
-  var getOptionsList = function getOptionsList() {
 
+      !newItem.maped ? count++ : 0;
+    });
+    return count;
+  };
+
+  var getOptionsList = function getOptionsList() {
+    $('#Map_options').html('');
     $.each(htmlMapJson, function (i, newItem) {
       if (!newItem.maped) {
         var radio = document.createElement("input");
@@ -119,20 +143,17 @@
     // initialize dots
     settings.dots = [];
 
-    $.each(currentMapJson, function (i, el) {
+    $.each(oldItemsMaped, function (i, el) {
       settings.dots.push(new dot(el.x, el.y, el.text, el.magePos, settings.align));
       $('#Map_' + el.sku).addClass('maped');
     });
 
-    // create tooltip canvas
-    var contexts = [];
+    inputMapJson.value = JSON.stringify(oldItemsMaped);
 
     // re-renders all dots
     var render = function render() {
       $.each(contexts, function (i, data) {
-
         $.each(settings.dots, function (j, dot) {
-          // console.log(dot.text)
           dot.render(data.ctx, data.el);
         });
       });
@@ -154,7 +175,6 @@
         var ndot = new dot(event.clientX - elementParent.left, event.clientY - elementParent.top + $(window).scrollTop(), text, magePos, settings.align, element);
 
         ndot.text = text;
-        // console.log(ndot.text)
 
         settings.dots.push(ndot);
         render();
@@ -162,18 +182,18 @@
 
         $('.Map_modal').fadeOut(300, function () {
 
-          $('#Map_options').html('');
-
-          currentMapJson.push({
-            "x": ndot.x,
-            "y": ndot.y,
-            "text": text,
-            "magePos": magePos,
-            "sku": sku,
-            "maped": true
+          $.each([oldItemsMaped, currentMapJson], function (i, array) {
+            array.push({
+              "x": ndot.x,
+              "y": ndot.y,
+              "text": text,
+              "magePos": magePos,
+              "sku": sku,
+              "maped": true
+            });
           });
 
-          inputMapJson.value = JSON.stringify(currentMapJson);
+          inputMapJson.value = JSON.stringify(oldItemsMaped);
         });
       });
     };
@@ -192,6 +212,7 @@
 
       var jqel = $(el);
 
+      // create tooltip canvas
       contexts.push({ el: el, ctx: el.getContext("2d") });
 
       jqel.mousemove(function (event) {
@@ -199,6 +220,8 @@
       });
 
       if (settings.setmode) jqel.click(function (e) {
+        console.log(jqel);
+        // jqel.clearRect(0, 0, contexts.width, contexts.height); //clear canvas
         if (missingMap()) {
           getOptionsList();
           $('.Map_modal').fadeIn(500, function () {
@@ -211,6 +234,16 @@
         if (isNumeric(settings.forceRatio)) jqel.height(jqel.width() * settings.forceRatio);
         render();
       });
+    });
+
+    $('.clear_porratoda').click(function () {
+      console.log('apaga a porra toda', settings.dots);
+
+      // $.each(contexts, function(i, data) {
+      //   $.each(settings.dots, function(j, dot) {
+      //     dot.render(data.ctx, data.el);
+      //   });
+      // });
     });
 
     // render initial dots
