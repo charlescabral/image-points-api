@@ -130,7 +130,9 @@
     // re-renders all dots
     var render = function render() {
       $.each(contexts, function (i, data) {
+
         $.each(settings.dots, function (j, dot) {
+          // console.log(dot.text)
           dot.render(data.ctx, data.el);
         });
       });
@@ -152,7 +154,7 @@
         var ndot = new dot(event.clientX - elementParent.left, event.clientY - elementParent.top + $(window).scrollTop(), text, magePos, settings.align, element);
 
         ndot.text = text;
-        console.log(ndot.text);
+        // console.log(ndot.text)
 
         settings.dots.push(ndot);
         render();

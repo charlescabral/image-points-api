@@ -145,7 +145,9 @@
     // re-renders all dots
     var render = function() {
       $.each(contexts, function(i, data) {
+
         $.each(settings.dots, function(j, dot) {
+          // console.log(dot.text)
           dot.render(data.ctx, data.el);
         });
       });
@@ -174,7 +176,7 @@
         );
 
         ndot.text = text
-        console.log(ndot.text)
+        // console.log(ndot.text)
 
         settings.dots.push(ndot);
         render();

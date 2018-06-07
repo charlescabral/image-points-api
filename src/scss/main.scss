@@ -51,7 +51,7 @@ html, body {
                             display: inline-block;
                             background-color: $c-blue;
                             color: $c-white;
-                            padding: 0 $gutter/2;
+                            text-align: center;
                             line-height: 16px;
                             font-size: 12px;
                             width: 100%;
@@ -187,6 +187,13 @@ html, body {
                 display: inline-block;
                 border-bottom: solid 1px $c-gray;
                 font-size: 12px;
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+
+                input {
+                    display: none;
+                }
 
                 &:last-child {
                     border: 0;
