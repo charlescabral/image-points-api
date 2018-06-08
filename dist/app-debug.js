@@ -45,15 +45,12 @@
   var missingMap = function missingMap() {
     var count = 0;
     htmlMapJson.filter(function (newItem, i) {
-      for (var u = 0; u < currentMapJson.length; u++) {
-        if (currentMapJson[u].sku == newItem.sku) {
-          htmlMapJson[i].maped = true;
-          break;
+      for (var u = 0; u < this.length; u++) {
+        if (this[u].sku == newItem.sku) {
+          htmlMapJson[i].maped = true;break;
         }
-      }
-
-      !newItem.maped ? count++ : 0;
-    });
+      }!newItem.maped ? count++ : 0;
+    }, currentMapJson);
     return count;
   };
 
@@ -81,9 +78,19 @@
     return Math.abs(1 - Math.abs(one / two)) < maxDev;
   };
 
+  var prerender = function prerender(_contexts, _dots) {
+    $.each(_contexts, function (i, data) {
+      $.each(_dots, function (j, dot) {
+        data.ctx.clearRect(0, 0, data.el.width, data.el.height);
+      });
+    });
+  };
+
   // dot helper class
   // x,y are assumend to already be relative to align unless el is not undefined
   var dot = function dot(_x, _y, _text, _magePos, _align, el) {
+    var _this = this;
+
     this.x = _x;
     this.y = _y;
     this.text = _text; // dot text
@@ -96,22 +103,21 @@
     }
 
     this.relativeX = function (el) {
-      return this.x * $(el).width() / this.align.x;
+      return _this.x * $(el).width() / _this.align.x;
     };
-
     this.relativeY = function (el) {
-      return this.y * $(el).height() / this.align.y;
+      return _this.y * $(el).height() / _this.align.y;
     };
 
     this.render = function (context, el) {
       context.beginPath();
-      context.arc(this.relativeX(el), this.relativeY(el), 32, 0, Math.PI * 2, true);
-      context.fillStyle = '#0b255a';context.fillStyle = '#0b255a';
+      context.arc(_this.relativeX(el), _this.relativeY(el), 32, 0, Math.PI * 2, true);
+      context.fillStyle = '#0b255a';
       context.fill();
       context.beginPath();
       context.fillStyle = '#FFF';
       context.font = "bold 24px Arial";
-      context.fillText(_magePos, this.relativeX(el) - 7, this.relativeY(el) + 7);
+      context.fillText(_magePos, _this.relativeX(el) - 7, _this.relativeY(el) + 7);
       context.fill();
     };
 
@@ -120,10 +126,10 @@
     this.isMe = function (x, y, el, maxDeviration) {
       maxDeviration = maxDeviration || 0.01;
       if (el != undefined) {
-        x = x * this.align.x / $(el).width();
-        y = y * this.align.y / $(el).height();
+        x = x * _this.align.x / $(el).width();
+        y = y * _this.align.y / $(el).height();
       }
-      return isNearby(x, this.x, maxDeviration) && isNearby(y, this.y, maxDeviration);
+      return isNearby(x, _this.x, maxDeviration) && isNearby(y, _this.y, maxDeviration);
     };
   };
 
@@ -134,10 +140,7 @@
       setcallback: function setcallback(dot) {},
       defaulttext: "New Item",
       forceRatio: false,
-      align: {
-        x: 100,
-        y: 100
-      }
+      align: { x: 100, y: 100 }
     }, options);
 
     // initialize dots
@@ -152,6 +155,7 @@
 
     // re-renders all dots
     var render = function render() {
+      prerender(contexts, settings.dots);
       $.each(contexts, function (i, data) {
         $.each(settings.dots, function (j, dot) {
           dot.render(data.ctx, data.el);
@@ -207,8 +211,7 @@
 
     // init mouse move on each element
     this.each(function (i, el) {
-      el.style = "background: url(" + settings.img + ");" + "background-repeat: no-repeat; " + "background-size: 100% 100%;" + "width: " + settings.width + "; ";
-      "height: " + settings.height + "; ";
+      el.style = "background: url(" + settings.img + ");" + "background-repeat: no-repeat;" + "background-size: 100% 100%;" + "width: " + settings.width + ";" + "height: " + settings.height + ";";
 
       var jqel = $(el);
 
@@ -220,7 +223,7 @@
       });
 
       if (settings.setmode) jqel.click(function (e) {
-        console.log(jqel);
+        // console.log(jqel)
         // jqel.clearRect(0, 0, contexts.width, contexts.height); //clear canvas
         if (missingMap()) {
           getOptionsList();

@@ -45,21 +45,17 @@
   const missingMap = (() => {
     let count = 0;
     htmlMapJson.filter( function(newItem, i) {
-      for (let u = 0; u < currentMapJson.length; u++) {
-        if(currentMapJson[u].sku == newItem.sku) {
-          htmlMapJson[i].maped = true;
-          break;
+      for (let u = 0; u < this.length; u++) {
+        if(this[u].sku == newItem.sku) {
+          htmlMapJson[i].maped = true; break;
         }
-      }
-    
-      !newItem.maped ? count++ : 0
-
-    });
+      } !newItem.maped ? count++ : 0
+    }, currentMapJson );
     return count;
   })
 
 
-  const getOptionsList = function() {
+  const getOptionsList = (() => {
     $('#Map_options').html('');
     $.each(htmlMapJson, function(i, newItem) {  
       if(!newItem.maped){
@@ -76,12 +72,20 @@
         document.getElementById("Map_options").appendChild(label);
       }
     });  
-  };
+  })
 
   // returns whether values are less than (maxDev * 100)% away
-  const isNearby = function(one, two, maxDev) {
+  const isNearby = (one, two, maxDev) => {
     return Math.abs(1 - Math.abs(one / two)) < maxDev;
   };
+
+  const prerender = (_contexts, _dots) => {
+    $.each(_contexts, function(i, data) {
+      $.each(_dots, function(j, dot) {
+        data.ctx.clearRect(0, 0, data.el.width, data.el.height);
+      });
+    });
+  }
   
   // dot helper class
   // x,y are assumend to already be relative to align unless el is not undefined
@@ -97,15 +101,10 @@
       this.y = this.y * this.align.y / $(el).height();
     }
     
-    this.relativeX = function(el) {
-      return this.x * $(el).width() / this.align.x;
-    };
-    
-    this.relativeY = function(el) {
-      return this.y * $(el).height() / this.align.y;
-    };
-    
-    this.render = function(context, el) {
+    this.relativeX = (el) => this.x * $(el).width() / this.align.x;
+    this.relativeY = (el) => this.y * $(el).height() / this.align.y;
+
+    this.render = (context, el) => {
       context.beginPath();
       context.arc(
         this.relativeX(el),
@@ -115,7 +114,7 @@
         Math.PI * 2,
         true
       );
-      context.fillStyle = '#0b255a';context.fillStyle = '#0b255a';
+      context.fillStyle = '#0b255a';
       context.fill();
       context.beginPath();
       context.fillStyle = '#FFF';
@@ -126,7 +125,7 @@
     
     // returns whether (x,y) match this point when relative to el or, if
     // el == undefined, they're matching (== diffrence less than maxDeviration)
-    this.isMe = function(x, y, el, maxDeviration) {
+    this.isMe = (x, y, el, maxDeviration) => {
       maxDeviration = maxDeviration || 0.01;
       if (el != undefined) {
         x = x * this.align.x / $(el).width();
@@ -139,20 +138,14 @@
   };
   
   $.fn.dots = function(dots, options) {
-    const settings = $.extend(
-      {
-        img: "",
-        setmode: false,
-        setcallback: function(dot) {},
-        defaulttext: "New Item",
-        forceRatio: false,
-        align: {
-          x: 100,
-          y: 100
-        }
-      },
-      options
-    );
+    const settings = $.extend({
+      img: "",
+      setmode: false,
+      setcallback: function(dot) {},
+      defaulttext: "New Item",
+      forceRatio: false,
+      align: { x: 100, y: 100 }
+    }, options );
     
     // initialize dots
     settings.dots = [];
@@ -165,7 +158,8 @@
     inputMapJson.value = JSON.stringify(oldItemsMaped)
     
     // re-renders all dots
-    const render = function() {
+    const render = () => {
+      prerender(contexts, settings.dots)
       $.each(contexts, function(i, data) {
         $.each(settings.dots, function(j, dot) {
           dot.render(data.ctx, data.el);
@@ -174,7 +168,7 @@
     };
 
     // places a new dot
-    const setProductDot = function(event, element) {
+    const setProductDot = (event, element) => {
 
       $('.Map_modal-option').change(function(){
         let currentOption = $(this);  
@@ -220,7 +214,7 @@
     };
     
     // removes a dot
-    this.removeDot = function(x, y) {
+    this.removeDot = (x, y) => {
       settings.dots = settings.dots.filter(function(el, index) {
         return dot.x != x && dot.y != y;
       });
@@ -229,15 +223,11 @@
     // init mouse move on each element
     this.each(function(i, el) {
       el.style =
-        "background: url(" +
-        settings.img +
-        ");" +
-        "background-repeat: no-repeat; " +
+        "background: url(" + settings.img + ");" +
+        "background-repeat: no-repeat;" +
         "background-size: 100% 100%;" +
-        "width: " +
-        settings.width +
-        "; ";
-        "height: " + settings.height + "; ";
+        "width: " + settings.width +";" +
+        "height: " + settings.height +";";
       
       const jqel = $(el);
 
@@ -249,16 +239,16 @@
       });
       
       if (settings.setmode)
-      jqel.click(function(e) {
-        console.log(jqel)
-        // jqel.clearRect(0, 0, contexts.width, contexts.height); //clear canvas
-        if (missingMap()) {
-          getOptionsList();
-          $('.Map_modal').fadeIn(500, function() {
-            setProductDot(e, el)
-          });
-        }
-      });
+        jqel.click(function(e) {
+          // console.log(jqel)
+          // jqel.clearRect(0, 0, contexts.width, contexts.height); //clear canvas
+          if (missingMap()) {
+            getOptionsList();
+            $('.Map_modal').fadeIn(500, function() {
+              setProductDot(e, el)
+            });
+          }
+        });
       
       jqel.resize(function(e) {
         if (isNumeric(settings.forceRatio))
