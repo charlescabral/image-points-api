@@ -10,6 +10,8 @@
 </head>
 
 <body>
+    <button class="testEvent">testar evento</button>
+
     <textarea id="map_decorated_ambient" cols="1" rows="7">
         [
         {"x":38.92857142857143,"y":25.618374558303888,"text":"Quadro lorem ipsum dolor sit amet, consectetur adipiscing elit","magePos":"1","sku":9821,"maped":true},
@@ -23,11 +25,10 @@
     {"x":91.2987012987013, "y":61.130742049469966, "text":"Almofada", "magePos":2, "sku":222 }
     ] -->
 
-    
-
     <div class="Map_container">
 
         <header class="Map_actions">
+
             <button class="saveClearDots">Apagar mapeamento</button>
         </header>
 
@@ -43,20 +44,20 @@
                         <a href="#" class="Map_delete">x</a>
                     </span>
                 </li>
-                <li class="Map_product" id="Map_222" data-magepos="20" data-sku="222">
+                <li class="Map_product" id="Map_222" data-magepos="2" data-sku="222">
                     <span class="Map_item">
                         <span class="Map_img">
-                            <span class="Map_pos">20</span>
+                            <span class="Map_pos">2</span>
                             <img src="./src/img/movel.jpg"/>
                         </span>
                         <span class="Map_title">Almofada lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
                         <a href="#" class="Map_delete">x</a>
                     </span>
                 </li>
-                <li class="Map_product" id="Map_333" data-magepos="3" data-sku="333">
+                <li class="Map_product" id="Map_333" data-magepos="30" data-sku="333">
                     <span class="Map_item">
                         <span class="Map_img">
-                            <span class="Map_pos">3</span>
+                            <span class="Map_pos">30</span>
                             <img src="./src/img/movel.jpg"/>
                         </span>
                         <span class="Map_title">Banquinho lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
@@ -76,15 +77,15 @@
                 </li>
 
                 <li class="Map_product" id="Map_124124" data-magepos="48" data-sku="124124">
-                        <span class="Map_item">
-                            <span class="Map_img">
-                                <span class="Map_pos">48</span>
-                                <img src="./src/img/movel.jpg"/>
-                            </span>
-                            <span class="Map_title">Lustre lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
-                            <a href="#" class="Map_delete">x</a>
+                    <span class="Map_item">
+                        <span class="Map_img">
+                            <span class="Map_pos">48</span>
+                            <img src="./src/img/movel.jpg"/>
                         </span>
-                    </li>
+                        <span class="Map_title">Lustre lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+                        <a href="#" class="Map_delete">x</a>
+                    </span>
+                </li>
             </ul>
         </aside>
         
@@ -95,10 +96,16 @@
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
             <script src="./dist/app.js"></script>
             <script>
-                jQuery("#Map_image").dots([], {
-                    img: './src/img/ambiente.jpg',
-                    setmode: true,
-                });
+
+                if ($('.Map_container').is(':visible')) {
+                    console.log('visible')
+                    jQuery("#Map_image").dots([], {
+                        img: './src/img/ambiente.jpg',
+                        setmode: true,
+                    });
+                } else {
+                    console.log('invisible')
+                }
             </script>
     
             <section class="Map_modal">

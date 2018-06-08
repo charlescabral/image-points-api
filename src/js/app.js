@@ -44,7 +44,6 @@
   // check if maped items in input
   const missingMap = ((mapJson) => {
     let count = 0;
-    console.log('html click ', mapJson)
     mapJson.filter( function(newItem, i) {
       for (let u = 0; u < this.length; u++) {
         if(this[u].sku == newItem.sku) {
@@ -54,7 +53,6 @@
     }, currentMapJson );
     return count;
   })
-
 
   const getOptionsList = ((mapJson) => {
     $('#Map_options').html('');
@@ -88,7 +86,7 @@
     });
   }
 
-  const saveClearDots = (_contexts, _dots) => {
+  const saveClearDots = () => {
     // $.each(_contexts, function(i, data) {
     //   $.each(_dots, function(j, dot) {
     //     data.ctx.clearRect(0, 0, data.el.width, data.el.height);
@@ -106,6 +104,7 @@
     // getOptionsList(htmlMapJson)
     // console.log(htmlMapJson)
     inputMapJson.value = []
+    $('button[title="Salvar e continuar a editar"]').trigger('click')
   }
   
   // dot helper class
@@ -139,9 +138,10 @@
       context.fill();
       context.beginPath();
       context.fillStyle = '#FFF';
-      context.font="bold 24px Arial";
-      context.fillText(_magePos, this.relativeX(el), this.relativeY(el));
-      context.textAlign="center";
+      context.font='bold 24px Arial';
+      context.fillText( _magePos, this.relativeX(el), this.relativeY(el));
+      context.textBaseline='middle';
+      context.textAlign='center';
       context.fill();
     };
     
@@ -190,7 +190,6 @@
       prerender(contexts, settings.dots)
       $.each(contexts, function(i, data) {
         $.each(settings.dots, function(j, dot) {
-          console.log(dot)
           dot.render(data.ctx, data.el);
         });
       });
@@ -284,9 +283,8 @@
       });
     });
 
-    $('.saveClearDots').click(saveClearDots)
-    
-    // render initial dots
+    $('.saveClearDots').on('click', saveClearDots)
+
     render();
     
     return this;

@@ -44,7 +44,6 @@
   // check if maped items in input
   var missingMap = function missingMap(mapJson) {
     var count = 0;
-    console.log('html click ', mapJson);
     mapJson.filter(function (newItem, i) {
       for (var u = 0; u < this.length; u++) {
         if (this[u].sku == newItem.sku) {
@@ -87,7 +86,7 @@
     });
   };
 
-  var saveClearDots = function saveClearDots(_contexts, _dots) {
+  var saveClearDots = function saveClearDots() {
     // $.each(_contexts, function(i, data) {
     //   $.each(_dots, function(j, dot) {
     //     data.ctx.clearRect(0, 0, data.el.width, data.el.height);
@@ -105,6 +104,7 @@
     // getOptionsList(htmlMapJson)
     // console.log(htmlMapJson)
     inputMapJson.value = [];
+    $('button[title="Salvar e continuar a editar"]').trigger('click');
   };
 
   // dot helper class
@@ -137,9 +137,10 @@
       context.fill();
       context.beginPath();
       context.fillStyle = '#FFF';
-      context.font = "bold 24px Arial";
+      context.font = 'bold 24px Arial';
       context.fillText(_magePos, _this.relativeX(el), _this.relativeY(el));
-      context.textAlign = "center";
+      context.textBaseline = 'middle';
+      context.textAlign = 'center';
       context.fill();
     };
 
@@ -186,7 +187,6 @@
       prerender(contexts, settings.dots);
       $.each(contexts, function (i, data) {
         $.each(settings.dots, function (j, dot) {
-          console.log(dot);
           dot.render(data.ctx, data.el);
         });
       });
@@ -266,9 +266,8 @@
       });
     });
 
-    $('.saveClearDots').click(saveClearDots);
+    $('.saveClearDots').on('click', saveClearDots);
 
-    // render initial dots
     render();
 
     return this;

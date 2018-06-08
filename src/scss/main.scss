@@ -23,8 +23,26 @@
 
 .Map_actions {
     @include grid-column(12);
-    text-align: right;
+    text-align: left;
     padding: $gutter 0;
+
+    .saveClearDots {
+        background: #ea9731;
+        color: #fff;
+        border-radius: 2px;
+        border: 0;
+        display: inline-block;
+        font: bold 12px arial, helvetica, sans-serif;
+        cursor: pointer;
+        text-align: center !important;
+        white-space: nowrap;
+        text-decoration: none;
+        padding: 10px;
+
+        &:hover {
+            background: #ffac47;
+        }
+    }
 }
 
 .Map_associated-products {
@@ -34,6 +52,9 @@
         border-top: $b-border;
         border-right: $b-border;
         border-left: $b-border;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        overflow: hidden;
 
         .Map_product {
             position: relative;
@@ -167,8 +188,13 @@
     
 }
 #Map_image {
+    border: $b-border;
     display: block;
     cursor: pointer;
+    margin-left: -2px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
 .Map_modal {
