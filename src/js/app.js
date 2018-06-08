@@ -42,12 +42,13 @@
   }
   
   // check if maped items in input
-  const missingMap = (() => {
+  const missingMap = ((mapJson) => {
     let count = 0;
-    htmlMapJson.filter( function(newItem, i) {
+    console.log('html click ', mapJson)
+    mapJson.filter( function(newItem, i) {
       for (let u = 0; u < this.length; u++) {
         if(this[u].sku == newItem.sku) {
-          htmlMapJson[i].maped = true; break;
+          mapJson[i].maped = true; break;
         }
       } !newItem.maped ? count++ : 0
     }, currentMapJson );
@@ -55,9 +56,9 @@
   })
 
 
-  const getOptionsList = (() => {
+  const getOptionsList = ((mapJson) => {
     $('#Map_options').html('');
-    $.each(htmlMapJson, function(i, newItem) {  
+    $.each(mapJson, function(i, newItem) {  
       if(!newItem.maped){
         let radio = document.createElement("input");
         radio.setAttribute('type', 'radio');
@@ -85,6 +86,26 @@
         data.ctx.clearRect(0, 0, data.el.width, data.el.height);
       });
     });
+  }
+
+  const saveClearDots = (_contexts, _dots) => {
+    // $.each(_contexts, function(i, data) {
+    //   $.each(_dots, function(j, dot) {
+    //     data.ctx.clearRect(0, 0, data.el.width, data.el.height);
+    //   });
+    // });
+    // inputMapJson.value = []
+    // console.log('old ', oldItemsMaped)
+    // console.log('html ', htmlMapJson)
+    // oldItemsMaped.filter( function(oldItem, i) {
+    //   oldItem.maped = false;
+    // });
+
+    // console.log('new old ', oldItemsMaped)
+
+    // getOptionsList(htmlMapJson)
+    // console.log(htmlMapJson)
+    inputMapJson.value = []
   }
   
   // dot helper class
@@ -119,7 +140,8 @@
       context.beginPath();
       context.fillStyle = '#FFF';
       context.font="bold 24px Arial";
-      context.fillText(_magePos, this.relativeX(el)-7, this.relativeY(el)+7);
+      context.fillText(_magePos, this.relativeX(el), this.relativeY(el));
+      context.textAlign="center";
       context.fill();
     };
     
@@ -138,6 +160,7 @@
   };
   
   $.fn.dots = function(dots, options) {
+
     const settings = $.extend({
       img: "",
       setmode: false,
@@ -149,12 +172,17 @@
     
     // initialize dots
     settings.dots = [];
-    
-    $.each(oldItemsMaped, function(i, el) {
+
+    oldItemsMaped.filter( function(el, i) {
+      for (let u = 0; u < this.length; u++) {
+        if(this[u].sku == el.sku) {
+          el.magePos = this[u].magePos; break;
+        }
+      }
       settings.dots.push(new dot(el.x, el.y, el.text, el.magePos, settings.align));
       $('#Map_'+ el.sku).addClass('maped');
-    });
-
+    }, htmlMapJson );
+    
     inputMapJson.value = JSON.stringify(oldItemsMaped)
     
     // re-renders all dots
@@ -162,6 +190,7 @@
       prerender(contexts, settings.dots)
       $.each(contexts, function(i, data) {
         $.each(settings.dots, function(j, dot) {
+          console.log(dot)
           dot.render(data.ctx, data.el);
         });
       });
@@ -240,10 +269,8 @@
       
       if (settings.setmode)
         jqel.click(function(e) {
-          // console.log(jqel)
-          // jqel.clearRect(0, 0, contexts.width, contexts.height); //clear canvas
-          if (missingMap()) {
-            getOptionsList();
+          if (missingMap(htmlMapJson)) {
+            getOptionsList(htmlMapJson);
             $('.Map_modal').fadeIn(500, function() {
               setProductDot(e, el)
             });
@@ -257,32 +284,11 @@
       });
     });
 
-    $('.clear_porratoda').click(function() {
-      console.log('apaga a porra toda', settings.dots)
-      
-
-
-      // $.each(contexts, function(i, data) {
-      //   $.each(settings.dots, function(j, dot) {
-      //     dot.render(data.ctx, data.el);
-      //   });
-      // });
-    })
+    $('.saveClearDots').click(saveClearDots)
     
     // render initial dots
     render();
     
     return this;
   };
-  
-  
-  // $.fn.initDots = function(options) {
-  //   let settings = $.extend(
-  //     {
-  //       teste: "",
-  //       setcallback: function() {},
-  //     },
-  //     options
-  //   );
-  // };
 })(jQuery);

@@ -21,6 +21,12 @@
     }
 }
 
+.Map_actions {
+    @include grid-column(12);
+    text-align: right;
+    padding: $gutter 0;
+}
+
 .Map_associated-products {
     @include grid-column(3);
 
