@@ -1,8 +1,20 @@
 "use strict";
 
 (function ($) {
-
   var contexts = [];
+
+  // ====> HELPERS <==== //
+  var setAttributes = function setAttributes(el, attrs) {
+    // Key Value
+    for (var key in attrs) {
+      el.setAttribute(key, attrs[key]);
+    }
+  };
+
+  var isNumber = function isNumber(value) {
+    if (!/^(\-|\+)?([0-9]+|Infinity)$/.test(value)) return Number(value);
+    return true;
+  };
 
   // input items
   var inputMapJson = document.getElementById("map_decorated_ambient");
@@ -11,6 +23,7 @@
   // html items
   var mapItems = $('.Map_product');
   var htmlMapJson = [];
+
   $.each(mapItems, function (i, el) {
     var text = $(el).find('.Map_title').text();
     var magePos = $(el).data('magepos');
@@ -54,23 +67,44 @@
     return count;
   };
 
+  // 'type': 'value',
+  //   'name': 'map-options',
+  //   'value': newItem.magePos,
+  //   'data-sku': newItem.sku,
+  //   'data-text': newItem.text
+
   var getOptionsList = function getOptionsList(mapJson) {
     $('#Map_options').html('');
-    $.each(mapJson, function (i, newItem) {
-      if (!newItem.maped) {
+    $.each(mapJson, function (i, option) {
+      if (!option.maped) {
         var radio = document.createElement("input");
-        radio.setAttribute('type', 'radio');
-        radio.setAttribute('name', 'map-options');
-        radio.setAttribute('value', newItem.magePos);
-        radio.setAttribute('data-sku', newItem.sku);
-        radio.setAttribute('data-text', newItem.text);
-        radio.className = 'Map_modal-option';
+        setAttributes(radio, {
+          'type': 'radio',
+          'name': 'map-options',
+          'value': option.magePos,
+          'data-sku': option.sku,
+          'data-text': option.text,
+          'class': 'Map_modal-option'
+        });
         var label = document.createElement("label");
         label.appendChild(radio);
-        label.appendChild(document.createTextNode(newItem.text));
+        label.appendChild(document.createTextNode(option.text));
         document.getElementById("Map_options").appendChild(label);
       }
     });
+  };
+
+  var getCancel = function getCancel() {
+    var id = 'Map_cancel-label';
+    $('#' + id).html('');
+    var radio = document.createElement("input");
+    setAttributes(radio, {
+      'type': 'radio',
+      'name': 'map-options',
+      'value': "cancel",
+      'class': 'Map_modal-option'
+    });
+    document.getElementById(id).appendChild(radio);
   };
 
   // returns whether values are less than (maxDev * 100)% away
@@ -87,29 +121,20 @@
   };
 
   var saveClearDots = function saveClearDots() {
-    // $.each(_contexts, function(i, data) {
-    //   $.each(_dots, function(j, dot) {
-    //     data.ctx.clearRect(0, 0, data.el.width, data.el.height);
-    //   });
-    // });
-    // inputMapJson.value = []
-    // console.log('old ', oldItemsMaped)
-    // console.log('html ', htmlMapJson)
-    // oldItemsMaped.filter( function(oldItem, i) {
-    //   oldItem.maped = false;
-    // });
-
-    // console.log('new old ', oldItemsMaped)
-
-    // getOptionsList(htmlMapJson)
-    // console.log(htmlMapJson)
     inputMapJson.value = [];
     $('button[title="Salvar e continuar a editar"]').trigger('click');
   };
 
+  var deleteDot = function deleteDot(_dots, sku) {}
+
+  // oldItemsMaped.filter( function( elem ) {
+  //     dots.removeDot(elem.x, elem.y)
+  // });
+
+
   // dot helper class
   // x,y are assumend to already be relative to align unless el is not undefined
-  var dot = function dot(_x, _y, _text, _magePos, _align, el) {
+  ;var dot = function dot(_x, _y, _text, _magePos, _align, el) {
     var _this = this;
 
     this.x = _x;
@@ -136,11 +161,11 @@
       context.fillStyle = '#0b255a';
       context.fill();
       context.beginPath();
+      context.textBaseline = 'middle';
+      context.textAlign = 'center';
       context.fillStyle = '#FFF';
       context.font = 'bold 24px Arial';
       context.fillText(_magePos, _this.relativeX(el), _this.relativeY(el));
-      context.textBaseline = 'middle';
-      context.textAlign = 'center';
       context.fill();
     };
 
@@ -201,33 +226,35 @@
         var sku = currentOption.data('sku');
         var text = currentOption.data('text');
 
-        $('#Map_' + sku).addClass('maped');
+        if (isNumber(magePos)) {
+          var elementParent = $(element).parent().offset();
+          var ndot = new dot(event.clientX - elementParent.left, event.clientY - elementParent.top + $(window).scrollTop(), text, magePos, settings.align, element);
+          ndot.text = text;
 
-        var elementParent = $(element).parent().offset();
+          $('#Map_' + sku).addClass('maped');
 
-        var ndot = new dot(event.clientX - elementParent.left, event.clientY - elementParent.top + $(window).scrollTop(), text, magePos, settings.align, element);
+          settings.dots.push(ndot);
+          render();
+          settings.setcallback(ndot);
 
-        ndot.text = text;
+          $('.Map_modal').fadeOut(300, function () {
 
-        settings.dots.push(ndot);
-        render();
-        settings.setcallback(ndot);
-
-        $('.Map_modal').fadeOut(300, function () {
-
-          $.each([oldItemsMaped, currentMapJson], function (i, array) {
-            array.push({
-              "x": ndot.x,
-              "y": ndot.y,
-              "text": text,
-              "magePos": magePos,
-              "sku": sku,
-              "maped": true
+            $.each([oldItemsMaped, currentMapJson], function (i, array) {
+              array.push({
+                "x": ndot.x,
+                "y": ndot.y,
+                "text": text,
+                "magePos": magePos,
+                "sku": sku,
+                "maped": true
+              });
             });
-          });
 
-          inputMapJson.value = JSON.stringify(oldItemsMaped);
-        });
+            inputMapJson.value = JSON.stringify(oldItemsMaped);
+          });
+        } else {
+          $('.Map_modal').fadeOut(300);
+        }
       });
     };
 
@@ -254,6 +281,7 @@
       if (settings.setmode) jqel.click(function (e) {
         if (missingMap(htmlMapJson)) {
           getOptionsList(htmlMapJson);
+          getCancel();
           $('.Map_modal').fadeIn(500, function () {
             setProductDot(e, el);
           });
@@ -266,7 +294,12 @@
       });
     });
 
-    $('.saveClearDots').on('click', saveClearDots);
+    $(document).on('click', '.saveClearDots', saveClearDots);
+
+    $(document).on('click', '.Map_delete', function () {
+      var sku = $(this).data('sku');
+      deleteDot(settings.dots, sku);
+    });
 
     render();
 

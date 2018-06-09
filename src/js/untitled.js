@@ -3,20 +3,6 @@
 (function($) {
   const contexts = [];
 
-  // ====> HELPERS <==== //
-  const setAttributes = (el, attrs) => {
-    // Key Value
-    for(let key in attrs ) {
-      el.setAttribute(key, attrs[key]);
-    }
-  }
-
-  const isNumber = (value) => {
-    if(! /^(\-|\+)?([0-9]+|Infinity)$/.test(value))
-      return Number(value);
-    return true;
-  }
-
   // input items
   const inputMapJson = document.getElementById("map_decorated_ambient");
   const currentMapJson = ($.trim(inputMapJson.value) != '') ? JSON.parse(inputMapJson.value) : [];
@@ -24,7 +10,6 @@
   // html items
   const mapItems = $('.Map_product');
   const htmlMapJson = []; 
-  
   $.each(mapItems, function (i, el) {
     let text = $(el).find('.Map_title').text();
     let magePos = $(el).data('magepos');
@@ -68,30 +53,20 @@
     return count;
   })
 
-
-
-  // 'type': 'value',
-  //   'name': 'map-options',
-  //   'value': newItem.magePos,
-  //   'data-sku': newItem.sku,
-  //   'data-text': newItem.text
-
   const getOptionsList = ((mapJson) => {
     $('#Map_options').html('');
-    $.each(mapJson, function(i, option) {  
-      if(!option.maped){
+    $.each(mapJson, function(i, newItem) {  
+      if(!newItem.maped){
         let radio = document.createElement("input");
-            setAttributes(radio, {
-              'type': 'radio',
-              'name': 'map-options',
-              'value': option.magePos,
-              'data-sku': option.sku,
-              'data-text': option.text,
-              'class': 'Map_modal-option'
-            })
+        radio.setAttribute('type', 'radio');
+        radio.setAttribute('name', 'map-options');
+        radio.setAttribute('value', newItem.magePos);
+        radio.setAttribute('data-sku', newItem.sku);
+        radio.setAttribute('data-text', newItem.text);
+        radio.className = 'Map_modal-option';
         let label = document.createElement("label");
-            label.appendChild(radio);
-            label.appendChild(document.createTextNode(option.text));
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(newItem.text));
         document.getElementById("Map_options").appendChild(label);
       }
     });  
@@ -101,14 +76,14 @@
     let id = 'Map_cancel-label'
     $('#' + id).html('');
     let radio = document.createElement("input");
-        setAttributes(radio, {
-          'type': 'radio',
-          'name': 'map-options',
-          'value': "cancel",
-          'class': 'Map_modal-option'
-        })
+    radio.setAttribute('type', 'radio');
+    radio.setAttribute('name', 'map-options');
+    radio.setAttribute('value', "cancel");
+    radio.className = 'Map_modal-option';
     document.getElementById(id).appendChild(radio);
   })
+
+  
 
   // returns whether values are less than (maxDev * 100)% away
   const isNearby = (one, two, maxDev) => {
@@ -124,15 +99,24 @@
   }
 
   const saveClearDots = () => {
+    // $.each(_contexts, function(i, data) {
+    //   $.each(_dots, function(j, dot) {
+    //     data.ctx.clearRect(0, 0, data.el.width, data.el.height);
+    //   });
+    // });
+    // inputMapJson.value = []
+    // console.log('old ', oldItemsMaped)
+    // console.log('html ', htmlMapJson)
+    // oldItemsMaped.filter( function(oldItem, i) {
+    //   oldItem.maped = false;
+    // });
+
+    // console.log('new old ', oldItemsMaped)
+
+    // getOptionsList(htmlMapJson)
+    // console.log(htmlMapJson)
     inputMapJson.value = []
     $('button[title="Salvar e continuar a editar"]').trigger('click')
-  }
-
-  const deleteDot = (_dots, sku) => {
-
-    // oldItemsMaped.filter( function( elem ) {
-    //     dots.removeDot(elem.x, elem.y)
-    // });
   }
   
   // dot helper class
@@ -165,11 +149,11 @@
       context.fillStyle = '#0b255a';
       context.fill();
       context.beginPath();
-      context.textBaseline='middle';
-      context.textAlign='center';
       context.fillStyle = '#FFF';
       context.font='bold 24px Arial';
       context.fillText( _magePos, this.relativeX(el), this.relativeY(el));
+      context.textBaseline='middle';
+      context.textAlign='center';
       context.fill();
     };
     
@@ -225,50 +209,48 @@
 
     // places a new dot
     const setProductDot = (event, element) => {
-
-      $('.Map_modal-option').change(function(){
+      $(document).on('change', '.Map_modal-option', function(){
         let currentOption = $(this);  
         let magePos = currentOption.val();
         let sku = currentOption.data('sku');
         let text = currentOption.data('text');
 
-        if(isNumber(magePos)) {
-          let elementParent = $(element).parent().offset();
-          const ndot = new dot(
-            event.clientX - elementParent.left,
-            event.clientY - elementParent.top + $(window).scrollTop(),
-            text,
-            magePos,
-            settings.align,
-            element
-          );
-          ndot.text = text
-
-          $('#Map_'+sku).addClass('maped');
-
-          settings.dots.push(ndot);
-          render();
-          settings.setcallback(ndot);
-
-          $('.Map_modal').fadeOut(300, function() {
-
-            $.each([oldItemsMaped, currentMapJson], function(i, array) {           
-              array.push({
-                "x":ndot.x, 
-                "y": ndot.y, 
-                "text": text, 
-                "magePos": magePos, 
-                "sku": sku,
-                "maped": true
-              });
-            });
-
-            inputMapJson.value = JSON.stringify(oldItemsMaped)
-          })
-        } else {
+        if(magePos == "cancel")
           $('.Map_modal').fadeOut(300)
-        }
-        
+
+        let elementParent = $(element).parent().offset();
+        $('#Map_'+sku).addClass('maped');
+
+        const ndot = new dot(
+          event.clientX - elementParent.left,
+          event.clientY - elementParent.top + $(window).scrollTop(),
+          text,
+          magePos,
+          settings.align,
+          element
+        );
+
+        ndot.text = text
+
+        settings.dots.push(ndot);
+        render();
+        settings.setcallback(ndot);
+
+        $('.Map_modal').fadeOut(300, function() {
+
+          $.each([oldItemsMaped, currentMapJson], function(i, array) {           
+            array.push({
+              "x":ndot.x, 
+              "y": ndot.y, 
+              "text": text, 
+              "magePos": magePos, 
+              "sku": sku,
+              "maped": true
+            });
+          });
+
+          inputMapJson.value = JSON.stringify(oldItemsMaped)
+        })
       });
     };
     
@@ -317,10 +299,7 @@
 
     $(document).on('click', '.saveClearDots', saveClearDots)
 
-    $(document).on('click', '.Map_delete', function(){
-      let sku = $(this).data('sku')
-      deleteDot(settings.dots, sku)
-    })
+    
 
     render();
     
