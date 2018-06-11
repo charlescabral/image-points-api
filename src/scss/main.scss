@@ -164,14 +164,13 @@
                     text-decoration: none;
                     cursor: pointer;
                     font-weight: bold;
-                    // display: none;
                     vertical-align: middle;
                     padding: 0 $gutter/2;
                     border: 0;
                     position: absolute;
                     left: 0;
                     top: 0;
-                    // display: none;
+                    display: none;
                 }
             }
         }
@@ -184,17 +183,15 @@
     // overflow: hidden;
     // width: 770px;
     // height: 566px;
-
-    
-}
-#Map_image {
-    border: $b-border;
-    display: block;
-    cursor: pointer;
     margin-left: -2px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    border: $b-border;
+}
+#Map_image {
+    display: block;
+    cursor: pointer;
 }
 
 .Map_modal {
@@ -300,5 +297,146 @@
                 }
             }
         }
+    }
+
+}
+
+.bubblingG {
+    text-align: center;
+    width:78px;
+    height:49px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba($c-white, 1);
+    z-index: 99;
+    line-height: 100vh;
+}
+
+.bubblingG span {
+    display: inline-block;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    margin: 24px auto;
+    background: $c-blue;
+    border-radius: 49px;
+    -o-border-radius: 49px;
+    -ms-border-radius: 49px;
+    -webkit-border-radius: 49px;
+    -moz-border-radius: 49px;
+    animation: bubblingG 1.5s infinite alternate;
+    -o-animation: bubblingG 1.5s infinite alternate;
+    -ms-animation: bubblingG 1.5s infinite alternate;
+    -webkit-animation: bubblingG 1.5s infinite alternate;
+    -moz-animation: bubblingG 1.5s infinite alternate;
+}
+
+#bubblingG_1 {
+    animation-delay: 0s;
+    -o-animation-delay: 0s;
+    -ms-animation-delay: 0s;
+    -webkit-animation-delay: 0s;
+    -moz-animation-delay: 0s;
+}
+
+#bubblingG_2 {
+    animation-delay: 0.45s;
+    -o-animation-delay: 0.45s;
+    -ms-animation-delay: 0.45s;
+    -webkit-animation-delay: 0.45s;
+    -moz-animation-delay: 0.45s;
+}
+
+#bubblingG_3 {
+    animation-delay: 0.9s;
+    -o-animation-delay: 0.9s;
+    -ms-animation-delay: 0.9s;
+    -webkit-animation-delay: 0.9s;
+    -moz-animation-delay: 0.9s;
+}
+
+
+
+@keyframes bubblingG {
+    0% {
+        width: 10px;
+        height: 10px;
+        background-color:$c-blue;
+        transform: translateY(0);
+    }
+
+    100% {
+        width: 23px;
+        height: 23px;
+        background-color:$c-white;
+        transform: translateY(-20px);
+    }
+}
+
+@-o-keyframes bubblingG {
+    0% {
+        width: 10px;
+        height: 10px;
+        background-color:$c-blue;
+        -o-transform: translateY(0);
+    }
+
+    100% {
+        width: 23px;
+        height: 23px;
+        background-color:$c-white;
+        -o-transform: translateY(-20px);
+    }
+}
+
+@-ms-keyframes bubblingG {
+    0% {
+        width: 10px;
+        height: 10px;
+        background-color:$c-blue;
+        -ms-transform: translateY(0);
+    }
+
+    100% {
+        width: 23px;
+        height: 23px;
+        background-color:$c-white;
+        -ms-transform: translateY(-20px);
+    }
+}
+
+@-webkit-keyframes bubblingG {
+    0% {
+        width: 10px;
+        height: 10px;
+        background-color:$c-blue;
+        -webkit-transform: translateY(0);
+    }
+
+    100% {
+        width: 23px;
+        height: 23px;
+        background-color:$c-white;
+        -webkit-transform: translateY(-20px);
+    }
+}
+
+@-moz-keyframes bubblingG {
+    0% {
+        width: 10px;
+        height: 10px;
+        background-color:$c-blue;
+        -moz-transform: translateY(0);
+    }
+
+    100% {
+        width: 23px;
+        height: 23px;
+        background-color:$c-white;
+        -moz-transform: translateY(-20px);
     }
 }

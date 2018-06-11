@@ -24,7 +24,6 @@
     <div class="Map_container">
 
         <header class="Map_actions">
-
             <button class="saveClearDots">Apagar mapeamento</button>
         </header>
 
@@ -89,18 +88,19 @@
             
             <canvas id="Map_image" width="770px" height="566px"></canvas>
 
+            <div class="bubblingG">
+                <span id="bubblingG_1"></span>
+                <span id="bubblingG_2"></span>
+                <span id="bubblingG_3"></span>
+            </div>
+
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
             <script src="./dist/app.js"></script>
             <script>
-                if ($('.Map_container').is(':visible')) {
-                    console.log('visible')
-                    jQuery("#Map_image").dots([], {
-                        img: './src/img/ambiente.jpg',
-                        setmode: true,
-                    });
-                } else {
-                    console.log('invisible')
-                }
+                jQuery("#Map_image").dots([], {
+                    img: './src/img/ambiente.jpg',
+                    setmode: true,
+                });
             </script>
     
             <section class="Map_modal">
